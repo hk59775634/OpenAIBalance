@@ -15,8 +15,8 @@ $subDate = new DateTime();
 $subDate->setDate($now->format('Y'), $now->format('m'), 1);
 
 // 设置 API 请求 URL 和请求头
-$urlSubscription = 'https://vercel.askopenai.tech/v1/dashboard/billing/subscription';
-$urlUsage = 'https://vercel.askopenai.tech/v1/dashboard/billing/usage?start_date=' . $startDate->format('Y-m-d') . '&end_date=' . $endDate->format('Y-m-d');
+$urlSubscription = 'https://api.openai.com/v1/dashboard/billing/subscription';
+$urlUsage = 'https://api.openai.com/v1/dashboard/billing/usage?start_date=' . $startDate->format('Y-m-d') . '&end_date=' . $endDate->format('Y-m-d');
 $headers = [
     'Authorization' => 'Bearer ' . $key,
     'Content-Type' => 'application/json'
@@ -34,7 +34,7 @@ $totalAmount = $subscriptionData->hard_limit_usd;
 // 判断总用量是否大于20，若大于则更新 startDate 为 subDate
 if ($totalAmount > 20) {
     $startDate = $subDate;
-    $urlUsage = 'https://vercel.askopenai.tech/v1/dashboard/billing/usage?start_date=' . $startDate->format('Y-m-d') . '&end_date=' . $endDate->format('Y-m-d');
+    $urlUsage = 'https://api.openai.com/v1/dashboard/billing/usage?start_date=' . $startDate->format('Y-m-d') . '&end_date=' . $endDate->format('Y-m-d');
 }
 
 // 获取已使用量
