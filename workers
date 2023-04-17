@@ -3,14 +3,14 @@ addEventListener("fetch", (event) => {
 });
 
 async function handleRequest(request) {
-  const apikey = request.headers.get("Authorization").split("Bearer ")[1];
+  const apikey = request.headers.get("Authorization")?.split("Bearer ")[1];
 
   if (!apikey) {
-    return new Response("请提供 API KEY", { status: 400 });
+    return new Response(JSON.stringify({ message: "请提供 API KEY", code: 400 }), { status: 400, headers: { "Content-Type": "application/json" } });
   }
 
-  const apiUrl = "https://api.openai.com"; // 设置 API URL
-  const urlSubscription = `${apiUrl}/v1/dashboard/billing/subscription`; // 查是否订阅
+  const apiUrl = "https://api.openai.com";
+  const urlSubscription = `${apiUrl}/v1/dashboard/billing/subscription`;
   const now = new Date();
   let startDate = new Date(now - 90 * 24 * 60 * 60 * 1000);
   const endDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
@@ -25,13 +25,11 @@ async function handleRequest(request) {
   try {
     let response = await fetch(urlSubscription, { headers });
     if (!response.ok) {
-      return new Response(
-        "您的账户已被封禁，请登录OpenAI进行查看。",
-        { status: 400 }
-      );
+      return new Response(JSON.stringify({ message: "您的账户已被封禁，请登录OpenAI进行查看。", code: 400 }), { status: 400, headers: { "Content-Type": "application/json" } });
     }
     const subscriptionData = await response.json();
     const totalAmount = subscriptionData.hard_limit_usd;
+    const accessUntil = subscriptionData.access_until;
 
     if (totalAmount > 20) {
       startDate = subDate;
@@ -48,22 +46,26 @@ async function handleRequest(request) {
 
     return new Response(
       JSON.stringify({
-        total_amount: totalAmount.toFixed(2),
-        total_used: totalUsage.toFixed(2),
-        remaining: remaining.toFixed(2),
+        code: response.status,
+        data: {
+          total_amount: totalAmount.toFixed(2),
+          total_used: totalUsage.toFixed(2),
+          remaining: remaining.toFixed(2),
+          access_until: accessUntil,
+        },
       }),
       { headers: { "Content-Type": "application/json" } }
     );
   } catch (error) {
     console.error(error);
-    return new Response("查询出错，请稍后再试。", { status: 500 });
+    return new Response(JSON.stringify({ message: "查询出错，请稍后再试。", code: 500 }), { status: 500, headers: { "Content-Type": "application/json" } });
   }
 }
 
 function formatDate(date) {
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const day = date.getDate().toString().padStart(2, "0");
+  const year = date.getUTCFullYear();
+  const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
+  const day = date.getUTCDate().toString().padStart(2, "0");
 
   return `${year}-${month}-${day}`;
 }
