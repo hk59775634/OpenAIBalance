@@ -9,6 +9,9 @@ GET or POST
 使用与访问 https://api.openai.com 一样的方法。
 即head中包含Authorization 和正确的key即可。
 
+测试地址
+https://headless.hk597756343976.workers.dev/
+
 注意事项
 该方法来自ChatGPT的回复。如果您人为存在bug或其他问题。可以自行去ChatGPT获得类似的代码。
 
