@@ -1,74 +1,20 @@
-OpenAIBalance
-This API allows you to check your OpenAI key balance. It returns the total amount, total used, and remaining balance of your OpenAI key.
+OpenAI 余额查询
+这是一个使用 OpenAI API KEY 查询余额的简单示例。它使用 API 来获取 OpenAI 总量限制，已使用量。计算得来余额信息，并返回总余额、已使用金额和剩余金额等数据。
 
-API Endpoint
-Deploy to workers in Cloudflare and use the POST method.
+部署方法
+将代码 clone 到Cloudflare的workers中发布：
 
-https://your-worker-name.your-subdomain.workers.dev/
+调用方法
+GET or POST
+使用与访问https://api.openai.com一样的方法。即head中包含Authorization 和正确的key即可。
 
-Request Format
-The request should be in JSON format and should contain your OpenAI API key.
+注意事项
+该方法来自ChatGPT的回复。如果您人为存在bug或其他问题。可以自行去ChatGPT获得类似的代码。
 
+作者
+作者：TOM
 
-```json
-    {
-        "apikey": "sk-xxxxxxxxxxxxxxxxxxxxx"
-    }
-```
+GitHub：https://github.com/hk59775634/OpenAIBalance
 
-
-Response Format
-The response will be in JSON format and will contain the total amount, total used, and remaining balance of your OpenAI key.
-
-
-```json
-    {
-        "total_amount": "120.00",
-        "total_used": "0.01",
-        "remaining": "119.99"
-    }
-```
-
-
-Feel free to use this API in your projects or integrate it into your applications.
-
-
-
-OpenAI余额查询
-
-此API允许您检查OpenAI密钥余额。它返回OpenAI密钥的总金额、总使用量和剩余余额。
-
-部署API
-
-部署到Cloudflare中的workers，并使用POST方法。
-https://your-worker-name.your-subdomain.workers.dev/
-
-
-请求格式
-
-请求应该是JSON格式，并且应该包含您的OpenAI API密钥。
-
-
-
-```json
-    {
-        "apikey": "sk-xxxxxxxxxxxxxxxxxxxxx"
-    }
-```
-
-
-
-响应格式
-
-响应将采用JSON格式，并包含OpenAI密钥的总量、使用总量和剩余余额。
-
-
-```json
-    {
-        "total_amount": "120.00",
-        "total_used": "0.01",
-        "remaining": "119.99"
-    }
-```
-
-请随意在您的项目中使用此API或将其集成到您的应用程序中。
+协议
+本项目使用 MIT 协议。您可以在 LICENSE 文件中查看更多详情。
