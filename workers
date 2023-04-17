@@ -3,63 +3,65 @@ addEventListener("fetch", (event) => {
 });
 
 async function handleRequest(request) {
-  if (request.method === "POST") {
-    const { apikey } = await request.json();
-    if (!apikey) {
-      return new Response("请提供 API KEY", { status: 400 });
-    }
-    const apiUrl = "https://vercel.askopenai.tech"; // 设置 API URL
-    const urlSubscription = `${apiUrl}/v1/dashboard/billing/subscription`; // 查是否订阅
-    const urlBalance = `${apiUrl}/dashboard/billing/credit_grants`; // 查普通账单
-    const now = new Date();
-    let startDate = new Date(now - 90 * 24 * 60 * 60 * 1000);
-    const endDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-    const subDate = new Date(now);
-    subDate.setDate(1);
+  const apikey = request.headers.get("Authorization").split("Bearer ")[1];
 
-    const headers = {
-      Authorization: `Bearer ${apikey}`,
-      "Content-Type": "application/json",
-    };
+  if (!apikey) {
+    return new Response("请提供 API KEY", { status: 400 });
+  }
 
-    try {
-      let response = await fetch(urlSubscription, { headers });
-      if (!response.ok) {
-        return new Response(
-          "您的账户已被封禁，请登录OpenAI进行查看。",
-          { status: 400 }
-        );
-      }
-      const subscriptionData = await response.json();
-      const totalAmount = subscriptionData.hard_limit_usd;
-
-      if (totalAmount > 20) {
-        startDate = subDate;
-      }
-      const urlUsage = `${apiUrl}/v1/dashboard/billing/usage?start_date=${formatDate(
-        startDate
-      )}&end_date=${formatDate(endDate)}`;
-
-      response = await fetch(urlUsage, { headers });
-      const usageData = await response.json();
-      const totalUsage = usageData.total_usage / 100;
-
-      const remaining = totalAmount - totalUsage;
-
-      return new Response(
-        JSON.stringify({
-          total_amount: totalAmount.toFixed(2),
-          total_used: totalUsage.toFixed(2),
-          remaining: remaining.toFixed(2),
-        }),
-        { headers: { "Content-Type": "application/json" } }
-      );
-    } catch (error) {
-      console.error(error);
-      return new Response("查询出错，请稍后再试。", { status: 500 });
-    }
-  } else {
+  if (request.method !== "GET") {
     return new Response("请求方法不被支持。", { status: 405 });
+  }
+
+  const apiUrl = "https://api.openai.com"; // 设置 API URL
+  const urlSubscription = `${apiUrl}/v1/dashboard/billing/subscription`; // 查是否订阅
+  const urlBalance = `${apiUrl}/dashboard/billing/credit_grants`; // 查普通账单
+  const now = new Date();
+  let startDate = new Date(now - 90 * 24 * 60 * 60 * 1000);
+  const endDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  const subDate = new Date(now);
+  subDate.setDate(1);
+
+  const headers = {
+    Authorization: `Bearer ${apikey}`,
+    "Content-Type": "application/json",
+  };
+
+  try {
+    let response = await fetch(urlSubscription, { headers });
+    if (!response.ok) {
+      return new Response(
+        "您的账户已被封禁，请登录OpenAI进行查看。",
+        { status: 400 }
+      );
+    }
+    const subscriptionData = await response.json();
+    const totalAmount = subscriptionData.hard_limit_usd;
+
+    if (totalAmount > 20) {
+      startDate = subDate;
+    }
+    const urlUsage = `${apiUrl}/v1/dashboard/billing/usage?start_date=${formatDate(
+      startDate
+    )}&end_date=${formatDate(endDate)}`;
+
+    response = await fetch(urlUsage, { headers });
+    const usageData = await response.json();
+    const totalUsage = usageData.total_usage / 100;
+
+    const remaining = totalAmount - totalUsage;
+
+    return new Response(
+      JSON.stringify({
+        total_amount: totalAmount.toFixed(2),
+        total_used: totalUsage.toFixed(2),
+        remaining: remaining.toFixed(2),
+      }),
+      { headers: { "Content-Type": "application/json" } }
+    );
+  } catch (error) {
+    console.error(error);
+    return new Response("查询出错，请稍后再试。", { status: 500 });
   }
 }
 
