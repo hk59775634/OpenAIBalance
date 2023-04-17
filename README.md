@@ -51,14 +51,11 @@ https://your-worker-name.your-subdomain.workers.dev/
 
 
 ```json
-
-{
-
-“apikey”：“sk-xxxxxxxxxxxxxxxxx”
-
-}
-
+    {
+        "apikey": "sk-xxxxxxxxxxxxxxxxxxxxx"
+    }
 ```
+
 
 
 响应格式
