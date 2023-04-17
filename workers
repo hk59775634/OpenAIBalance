@@ -25,7 +25,7 @@ async function handleRequest(request) {
   try {
     let response = await fetch(urlSubscription, { headers });
     if (!response.ok) {
-      return new Response(JSON.stringify({ message: "您的账户已被封禁，请登录OpenAI进行查看。", code: 400 }), { status: 400, headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify({ message: "您的APIKEY无效或账户已被封禁，请登录OpenAI进行查看。", code: 400 }), { status: 400, headers: { "Content-Type": "application/json" } });
     }
     const subscriptionData = await response.json();
     const totalAmount = subscriptionData.hard_limit_usd;
