@@ -9,10 +9,6 @@ async function handleRequest(request) {
     return new Response("请提供 API KEY", { status: 400 });
   }
 
-  if (request.method !== "GET") {
-    return new Response("请求方法不被支持。", { status: 405 });
-  }
-
   const apiUrl = "https://api.openai.com"; // 设置 API URL
   const urlSubscription = `${apiUrl}/v1/dashboard/billing/subscription`; // 查是否订阅
   const urlBalance = `${apiUrl}/dashboard/billing/credit_grants`; // 查普通账单
