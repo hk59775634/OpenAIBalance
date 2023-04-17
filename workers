@@ -11,7 +11,6 @@ async function handleRequest(request) {
 
   const apiUrl = "https://api.openai.com"; // 设置 API URL
   const urlSubscription = `${apiUrl}/v1/dashboard/billing/subscription`; // 查是否订阅
-  const urlBalance = `${apiUrl}/dashboard/billing/credit_grants`; // 查普通账单
   const now = new Date();
   let startDate = new Date(now - 90 * 24 * 60 * 60 * 1000);
   const endDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
